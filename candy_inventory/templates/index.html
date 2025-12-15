@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #4CAF50;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        form input, form select, form button {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        form button:hover {
+            background-color: #45a049;
+        }
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .delete-button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+    
+</head>
+<body>
+    <header>
+        Gestión de Inventario
+    </header>
+    <div class="container">
+        <h2>Agregar ítems al inventario</h2>
+
+        <!-- Formulario para agregar ítems -->
+        <form action="/add" method="POST">
+            <input type="date" name="date" placeholder="Fecha" required>
+            <input type="text" name="name" placeholder="Nombre del ítem" required>
+            <input type="text" name="brand" placeholder="Marca" required>
+            <input type="text" name="type" placeholder="Tipo de ítem" required>
+            <input type="number" name="price" placeholder="Precio" min="0" step="0.01" required>
+            <input type="number" name="quantity" placeholder="Cantidad" min="1" required>
+            <button type="submit">Agregar</button>
+        </form>
+
+        <!-- Tabla de inventario -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Ítem</th>
+                    <th>Marca</th>
+                    <th>Tipo</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in inventory %}
+                    {% set idx = loop.index0 %}
+                    <tr>
+                        <td>{{ entry.date }}</td>
+                        <td>{{ entry.name }}</td>
+                        <td>{{ entry.brand }}</td>
+                        <td>{{ entry.type }}</td>
+                        <td>$ {{ '%.2f' % entry.price }}</td>
+                        <td>{{ entry.quantity }}</td>
+                        <td>$ {{ '%.2f' % (entry.price * entry.quantity) }}</td>
+                        <td>
+                            <form action="/delete" method="POST" style="display:inline;">
+                                <input type="hidden" name="idx" value="{{ idx }}">
+                                <button type="submit" class="delete-button">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
